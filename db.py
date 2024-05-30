@@ -15,15 +15,15 @@ url = f"postgresql+asyncpg://{os.environ.get('POSTGRES_USER')}:" \
       f"/{os.environ.get('POSTGRES_DB')}"
 
 engine = create_async_engine(url, echo=True)
-Base = sqlalchemy.orm.declarative_base()
-metadata = MetaData()
+
 sessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
 async def init_db():
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all())
-        await conn.run_sync(Base.metadata.drop_all())
+        pass
+        # await conn.run_sync(Base.metadata.create_all())
+        # await conn.run_sync(Base.metadata.drop_all())
 
 
 async def get_session():
