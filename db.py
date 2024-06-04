@@ -1,8 +1,7 @@
 import os
 
-import sqlalchemy.orm
+
 from dotenv import load_dotenv
-from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 

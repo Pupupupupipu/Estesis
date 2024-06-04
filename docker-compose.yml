@@ -4,14 +4,22 @@ services:
   web:
     build: .
     container_name: web_app
+    command: ["/app/entrypoint.sh"]
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     depends_on:
+      - db
       - redis
       - celery
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+
+
+  db:
+    image: postgres:latest
+    container_name: db
+    env_file:
+      - .env
 
   redis:
     image: redis:latest
@@ -22,21 +30,20 @@ services:
   celery:
     build: .
     container_name: celery_worker
-    command: celery -A celery_app.app worker --loglevel=info
+    env_file:
+      - .env
+    command: celery -A tasks.tasks:celery worker --loglevel=info
     depends_on:
       - redis
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+
 
   flower:
     build: .
     container_name: flower
-    command: celery -A celery_app.app flower --port=5555
+    env_file:
+      - .env
+    command: celery -A tasks.tasks:celery flower
     ports:
       - "5555:5555"
     depends_on:
       - redis
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379

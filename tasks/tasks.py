@@ -2,12 +2,15 @@ from celery import Celery
 import redis
 import uuid
 import json
+import os
 from celery.schedules import crontab
+from dotenv import load_dotenv
 from sqlalchemy import DateTime
 from datetime import datetime, timedelta
 
+load_dotenv()
 
-celery = Celery('tasks', broker='redis://localhost:6379')
+celery = Celery('tasks', broker=f"redis://{os.environ.get('REDIS_HOST')}:{os.environ.get('REDIS_PORT')}")
 
 celery.conf.beat_schedule = {
     'create_daily_record': {
