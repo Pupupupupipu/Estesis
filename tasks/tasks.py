@@ -19,7 +19,7 @@ celery.conf.beat_schedule = {
     },
 }
 celery.conf.timezone = 'UTC'
-redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+redis_client = redis.StrictRedis(host=f"{os.environ.get('REDIS_HOST')}", port=int(os.environ.get('REDIS_PORT')), db=0)
 
 def update_daily_record(data: dict,
                         current_date: str):

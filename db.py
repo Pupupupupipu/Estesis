@@ -1,7 +1,9 @@
+import asyncio
 import os
 
 
 from dotenv import load_dotenv
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
@@ -19,11 +21,18 @@ sessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
 async def init_db():
-    async with engine.begin() as conn:
-        pass
-        # await conn.run_sync(Base.metadata.create_all())
-        # await conn.run_sync(Base.metadata.drop_all())
+    while True:
+        try:
+            async with engine.begin() as conn:
+                await conn.execute(text('SELECT 1'))
+            print("Database is ready!")
+            break
+        except Exception as e:
+            print(f"Waiting for the database... ({e})")
+            await asyncio.sleep(1)
 
+if __name__ == '__main__':
+    asyncio.run(init_db())
 
 async def get_session():
     async with sessionLocal() as session:

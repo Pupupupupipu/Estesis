@@ -1,5 +1,7 @@
 import json
+import os
 
+from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException
 import aioredis
 from datetime import datetime, time
@@ -15,7 +17,9 @@ from tasks.tasks import post_order, close_order as redis_close_order
 
 orders_api = APIRouter(tags=["order"], prefix="/order")
 
-redis = aioredis.from_url('redis://localhost:6379')
+load_dotenv()
+
+redis = aioredis.from_url(f"redis://{os.environ.get('REDIS_HOST')}:{os.environ.get('REDIS_PORT')}")
 @orders_api.post('/')
 async def open_order(
         order: Open_order,
